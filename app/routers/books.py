@@ -20,6 +20,22 @@ def add_book(book: Book):
     books[book.id] = book
     return "Book successfully added."
 
+@router.delete("/")
+def delete_all_books():
+    """Deletes all books."""
+    books.clear()
+    return "All books successfully deleted."
+
+@router.delete("/{id}")
+def delete_book(
+        id: Annotated[int, Path(description="The ID of the book to delete")]
+):
+    try:
+        del books[id]
+        return "Book successfully deleted"
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Book not found")
+
 @router.get("/{id}")
 def get_book_by_id(id: Annotated[int, Path(description="The ID of the book to get")]) -> Book:
     """Returns the book with the given id."""
@@ -39,6 +55,18 @@ def add_review(
         return "Review successfully added"
     except KeyError:
         raise HTTPException(status_code=404, detail="Book not found")
+
+@router.put("/{id}")
+def update_book(
+        id: Annotated[int, Path(description="The ID of the book to update")],
+        book: Book
+):
+    """Updates the book with the given ID."""
+    if not id in books:
+        raise HTTPException(status_code=404, detail="Book not found")
+    books[book.id] = book
+    return "Book successfully updated."
+
 
 
 
