@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Path
-from pydantic import ValidationError
 from models.book import Book
 from models.review import Review
 from data.books import books
@@ -12,6 +11,14 @@ router = APIRouter(prefix="/books")
 def get_all_books() -> list[Book]:
     """Returns the list of available books."""
     return list(books.values())
+
+@router.post("/")
+def add_book(book: Book):
+    """Adds a new book."""
+    if book.id == books:
+        raise HTTPException(status_code=403, detail="Book ID already exists.")
+    books[book.id] = book
+    return "Book successfully added."
 
 @router.get("/{id}")
 def get_book_by_id(id: Annotated[int, Path(description="The ID of the book to get")]) -> Book:
@@ -32,8 +39,9 @@ def add_review(
         return "Review successfully added"
     except KeyError:
         raise HTTPException(status_code=404, detail="Book not found")
-    except ValidationError:
-        raise HTTPException(status_code=400, detail="Not a valid review")
+
+
+
 
 
 
