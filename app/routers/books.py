@@ -1,15 +1,19 @@
 from fastapi import APIRouter, HTTPException, Path
-from models.book import Book
-from models.review import Review
-from data.books import books
+from app.models.book import Book
+from app.models.review import Review
+from app.data.books import books
 from typing import Annotated
 
 router = APIRouter(prefix="/books")
 
 
 @router.get("/")
-def get_all_books() -> list[Book]:
+def get_all_books(
+        sort: bool = False
+) -> list[Book]:
     """Returns the list of available books."""
+    if sort:
+        return sorted(books.values(), key=lambda book: book.review)
     return list(books.values())
 
 @router.post("/")
