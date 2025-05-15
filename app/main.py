@@ -1,22 +1,24 @@
-from fastapi import FastAPI, Request
-from app.routers import books
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI
+from routers import books, frontend
+from starlette.staticfiles import StaticFiles
+from data.db import init_database
+from contextlib import contextmanager, asynccontextmanager
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # an start
+    init_database()
+    yield
+    # an close
 
-app = FastAPI()
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(books.router, tags=["books"])
-templates = Jinja2Templates(directory="app/templates")
 
-@app.get("/",response_class=HTMLResponse)
-def home(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="home.html"
-    )
-
+app.include_router(frontend.router)
+app.mount("/static", StaticFiles(directory="app/static"), name='static')
 
 
 if __name__ == "__main__":

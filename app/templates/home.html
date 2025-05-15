@@ -1,8 +1,10 @@
-<!DOCTYPE html>
-    <html>
-    <head>
-        <body>
-            <h1>Hello World!</h1>
-            <p>Helloooooo</p>
-        </body>
-    </html>
+{% extends "base.html" %}
+{% block content %}
+    <div style="text-align: center">
+        <h1>{{ text.tile }}</h1>
+        <p>{{ text.content }}</p>
+        <br>
+        <img src="{{ url_for('static', path='download.avif') }}" alt="library">
+    </div>
+{% endblock %}
+

@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field
+from sqlmodel import SQLModel, Field
 from typing import Annotated
 
 
-class Book(BaseModel):
-    id: int
+class Book(SQLModel, table=True):
+    id: int = Field(primary_key=True)
     title: str
     author: str
-    review: Annotated[int | None, Field(ge=1, le=5)] = None
+    review: Annotated[int, Field(ge=1, le=5)] = None
