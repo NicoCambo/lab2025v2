@@ -99,7 +99,7 @@ def update_book(
     book.title = new_book.title
     book.author = new_book.author
     book.review = new_book.review
-    session.add(book)
+    # session.add(book)
     session.commit()
     return "Book successfully updated."
 

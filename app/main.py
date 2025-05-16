@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from routers import books, frontend
+from app.routers import books, frontend
 from starlette.staticfiles import StaticFiles
-from data.db import init_database
+from app.data.db import init_database
 from contextlib import contextmanager, asynccontextmanager
 
 
