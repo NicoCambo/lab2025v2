@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from data.books import books
+from data.db import SessionDep
+from sqlmodel import select
+from models.book import Book
 
 templates = Jinja2Templates(directory="app/templates")
-app = APIRouter()
+
+router = APIRouter()
 
 @router.get("/",response_class=HTMLResponse)
 def home(request: Request):
@@ -18,8 +21,10 @@ def home(request: Request):
     )
 
 @router.get("/book_list", response_class=HTMLResponse)
-def show_book_list(request: Request):
-    context = {"books":list(books.values())}
+def show_book_list(request: Request, session: SessionDep):
+    statement = select(Book)
+    books = session.exec(statement).all()
+    context = {"books":books}
     return templates.TemplateResponse(
         request=request, name="list.html", context={}
     )
