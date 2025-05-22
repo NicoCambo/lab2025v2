@@ -9,7 +9,6 @@ class BookBase(SQLModel):
 
 class Book(BookBase, table=True):
     id: int = Field(default=None, primary_key=True)
-    user_id: int | None = Field(default=None, foreign_key="user.id")
 
 class BookCreate(BookBase):
     pass

@@ -5,6 +5,7 @@ from faker import Faker
 import os
 from app.models.book import Book # NOQA
 from app.models.user import User
+from app.models.book_user_link import BookUserLink
 
 sqlite_file_name = "app/data/database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
@@ -26,9 +27,13 @@ def init_database():
                 session.commit()
             for i in range(10):
                 book = Book(title=f.sentence(nb_words=5), author=f.name(),
-                            review=f.pyint(1,5),
-                            user_id=f.pyint(1,10))
+                            review=f.pyint(1,5))
                 session.add(book)
+            session.commit()
+            for i in range(10):
+                link = BookUserLink(book_id=f.pyint(1,10),
+                                    user_id=f.pyint(1,10))
+                session.add(link)
             session.commit()
 
 
