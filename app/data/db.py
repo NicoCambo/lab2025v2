@@ -3,7 +3,8 @@ from typing import Annotated
 from fastapi import Depends
 from faker import Faker
 import os
-from app.models.book import Book
+from app.models.book import Book # NOQA
+from app.models.user import User
 
 sqlite_file_name = "app/data/database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
@@ -19,8 +20,14 @@ def init_database():
         f = Faker("it_IT")
         with Session(engine) as session:
             for i in range(10):
+                user = User(
+                    name=f.name(),birth_date=f.date_of_birth(),city=f.city())
+                session.add(user)
+                session.commit()
+            for i in range(10):
                 book = Book(title=f.sentence(nb_words=5), author=f.name(),
-                            review=f.pyint(1,5))
+                            review=f.pyint(1,5),
+                            user_id=f.pyint(1,10))
                 session.add(book)
             session.commit()
 
